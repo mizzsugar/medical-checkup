@@ -162,6 +162,17 @@ class TestMedicalCheckUp(TestCase):
                     conducted_month=5
                 ).is_reexamination
             )
+
+        with self.subTest('健診場所が登録される'):
+            self.assertEqual(
+                '東京クリニック',
+                medical_checkup.models.checkup.MedicalCheckUp.objects.get(
+                    employee_id=self.emp_1.id,
+                    target_year=2018,
+                    conducted_year=2018,
+                    conducted_month=5
+                ).location
+            )
         
         with self.subTest('健診日が登録される'):
             self.assertEqual(
@@ -196,12 +207,92 @@ class TestMedicalCheckUp(TestCase):
             )
     
     def test_save_existing_checkup(self):
-        # TODO: 存在するやつ
-        pass
+        updated_checkup = medical_checkup.types.MedicalCheckUpValue(
+                employee=employee.models.employee.Manager.convert(self.emp_1),
+                target_year=2019,
+                conducted_year=2019,
+                conducted_month=5,
+                course=4,
+                is_reexamination=False,
+                location='江戸川病院',
+                consultation_date=datetime.date(2018, 5, 20),
+                need_reexamination=True,
+                judgement_date=datetime.date(2018, 6, 20)
+        )
+        medical_checkup.models.checkup.Manager.save(
+            mc=updated_checkup
+        )
+
+        with self.subTest('再検査かどうかが更新される'):
+            self.assertFalse(
+                medical_checkup.models.checkup.MedicalCheckUp.objects.get(
+                    employee_id=self.emp_1.id,
+                    target_year=2019,
+                    conducted_year=2019,
+                    conducted_month=5
+                ).is_reexamination
+            )
+
+        with self.subTest('健診場所が更新される'):
+            self.assertEqual(
+                '江戸川病院',
+                medical_checkup.models.checkup.MedicalCheckUp.objects.get(
+                    employee_id=self.emp_1.id,
+                    target_year=2019,
+                    conducted_year=2019,
+                    conducted_month=5
+                ).location
+            )
+        
+        with self.subTest('健診日が更新される'):
+            self.assertEqual(
+                datetime.date(2018, 5, 20),
+                medical_checkup.models.checkup.MedicalCheckUp.objects.get(
+                    employee_id=self.emp_1.id,
+                    target_year=2019,
+                    conducted_year=2019,
+                    conducted_month=5
+                ).consultation_date
+            )
+        
+        with self.subTest('再検査が必要かどうかが更新される'):
+            self.assertTrue(
+                medical_checkup.models.checkup.MedicalCheckUp.objects.get(
+                    employee_id=self.emp_1.id,
+                    target_year=2019,
+                    conducted_year=2019,
+                    conducted_month=5
+                ).need_reexamination
+            )
+        
+        with self.subTest('判定日が更新される'):
+            self.assertEqual(
+                datetime.date(2018, 6, 20),
+                medical_checkup.models.checkup.MedicalCheckUp.objects.get(
+                    employee_id=self.emp_1.id,
+                    target_year=2019,
+                    conducted_year=2019,
+                    conducted_month=5
+                ).judgement_date
+            )
 
     def test_emp_id_does_not_match(self):
-        # TODO: DBに登録されていない社員ID
-        pass
+        with self.assertRaises(employee.models.employee.Employee.DoesNotExist):
+            updated_checkup = medical_checkup.types.MedicalCheckUpValue(
+                    employee=employee.types.Employee(id=100, birthday=datetime.date(2000, 1, 1)),
+                    target_year=2019,
+                    conducted_year=2019,
+                    conducted_month=5,
+                    course=4,
+                    is_reexamination=False,
+                    location='江戸川病院',
+                    consultation_date=datetime.date(2018, 5, 20),
+                    need_reexamination=True,
+                    judgement_date=datetime.date(2018, 6, 20)
+            )
+            medical_checkup.models.checkup.Manager.save(
+                mc=updated_checkup
+            )
         
     @classmethod
     def tearDownClass(cls):

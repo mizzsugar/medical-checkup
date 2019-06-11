@@ -28,10 +28,14 @@ class Manager:
 
     @classmethod
     def save(cls, mc: medical_checkup.types.MedicalCheckUpValue) -> None:
+        """フォームや自動登録機能によって送られた健診データを保存するメソッドです。
+
+        update_or_createにしたかったのですが、
+        UniqueConstraintのバグを踏んでしまったようでできませんでした・・・
+        """
         try:
             emp_from_repogitory = employee.models.employee.Employee.objects.get(pk=mc.employee.id)
         except employee.models.employee.Employee.DoesNotExist:
-            # エラー吐く
             raise
         try:
             mc_from_repogitory = MedicalCheckUp.objects.get(
