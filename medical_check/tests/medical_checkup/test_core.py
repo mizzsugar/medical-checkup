@@ -186,7 +186,7 @@ class TestExtractExamees(TestCase):
         )
         actual_list = list(actual)
         self.assertEqual(
-            [self.converted_check_up_2],
+            [employee.types.Employee(id=self.emp_2.id, birthday=datetime.date(1980,5,11))],
             actual_list
         )
     

@@ -20,7 +20,7 @@ def iter_birthday_month_employees(today: datetime.date)->Iterator[employee.types
 # (1)2 前月の定期健康診断において，再検査が必要と判定された従業員を抽出する。
 def iter_reexamine_employees(conducted_year: int, conducted_month: int) -> Iterator[employee.types.Employee]:
     return (
-        mc
+        mc.employee
         for mc in medical_checkup.models.checkup.Manager.iter_all()
         if mc.conducted_year==conducted_year and mc.conducted_month==conducted_month and mc.need_reexamination
     )
