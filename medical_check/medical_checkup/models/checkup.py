@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import Iterator
 
 from django.db import models
@@ -25,6 +26,28 @@ class Manager:
             for medcial_checkup_from_repogitory in MedicalCheckUp.objects.iterator()
         )
 
+    @classmethod
+    def save(cls, mc: medical_checkup.types.MedicalCheckUp) -> None:
+        """受け取った健康診断情報を永続化します。
+
+        """
+        # TODO: get_or_createでIntegurityErrorになるのどうにかしたいよ〜〜
+        # django.db.utils.IntegrityError: UNIQUE constraint failed: medical_checkups.employee_id, medical_checkups.target_year, medical_c
+        # heckups.conducted_year, medical_checkups.conducted_month
+        
+        repogitory_mc, created = MedicalCheckUp.objects.get_or_create(
+            employee_id=mc.employee.id,
+            target_year=mc.target_year,
+            conducted_year=mc.conducted_year,
+            conducted_month=mc.conducted_month,
+            course=mc.course,
+            is_reexamination=mc.is_reexamination,
+            consultation_date=mc.consultation_date,
+            need_reexamination=mc.need_reexamination,
+            judgement_date=mc.judgement_date
+        )
+        
+
 
 class MedicalCheckUp(models.Model):
     MEDICAL_CHECKUP_COURSES = (
@@ -43,7 +66,7 @@ class MedicalCheckUp(models.Model):
     location = models.TextField()  # 健康診断実施場所
     consultation_date = models.DateField()  # 健康診断実施日
     need_reexamination = models.BooleanField(default=False)
-    judgement_date = models.DateField()  # 判定年月日
+    judgement_date = models.DateField(null=True, blank=True)  # 判定年月日
 
     class Meta:
         db_table = 'medical_checkups'
