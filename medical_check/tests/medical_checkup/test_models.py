@@ -144,20 +144,63 @@ class TestMedicalCheckUp(TestCase):
         medical_checkup.models.checkup.Manager.save(
             mc=new_checkup
         )
-        self.assertTrue(
-            medical_checkup.models.checkup.MedicalCheckUp.objects.get(
-                employee_id=self.emp_1.id,
-                target_year=2018,
-                conducted_year=2018,
-                conducted_month=5
+        with self.subTest('新しく健康診断データが登録される'):
+            self.assertTrue(
+                medical_checkup.models.checkup.MedicalCheckUp.objects.get(
+                    employee_id=self.emp_1.id,
+                    target_year=2018,
+                    conducted_year=2018,
+                    conducted_month=5
+                )
             )
-        )
+        with self.subTest('再検査かどうかが登録される'):
+            self.assertTrue(
+                medical_checkup.models.checkup.MedicalCheckUp.objects.get(
+                    employee_id=self.emp_1.id,
+                    target_year=2018,
+                    conducted_year=2018,
+                    conducted_month=5
+                ).is_reexamination
+            )
         
+        with self.subTest('健診日が登録される'):
+            self.assertEqual(
+                datetime.date(2018, 5, 16),
+                medical_checkup.models.checkup.MedicalCheckUp.objects.get(
+                    employee_id=self.emp_1.id,
+                    target_year=2018,
+                    conducted_year=2018,
+                    conducted_month=5
+                ).consultation_date
+            )
+        
+        with self.subTest('再検査が必要かどうかが登録される'):
+            self.assertFalse(
+                medical_checkup.models.checkup.MedicalCheckUp.objects.get(
+                    employee_id=self.emp_1.id,
+                    target_year=2018,
+                    conducted_year=2018,
+                    conducted_month=5
+                ).need_reexamination
+            )
+        
+        with self.subTest('判定日が登録される'):
+            self.assertEqual(
+                datetime.date(2018, 6, 15),
+                medical_checkup.models.checkup.MedicalCheckUp.objects.get(
+                    employee_id=self.emp_1.id,
+                    target_year=2018,
+                    conducted_year=2018,
+                    conducted_month=5
+                ).judgement_date
+            )
     
     def test_save_existing_checkup(self):
+        # TODO: 存在するやつ
         pass
 
     def test_emp_id_does_not_match(self):
+        # TODO: DBに登録されていない社員ID
         pass
         
     @classmethod
