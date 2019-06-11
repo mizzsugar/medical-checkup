@@ -146,10 +146,30 @@ class TestExtractExamees(TestCase):
     def test_iter_birthday_month_employees(self, mock_manager):
         mock_manager.iter_all.return_value = (
             (
-                employee.types.Employee(id=self.emp_1.id, birthday=datetime.date(1990, 5, 10)),
-                employee.types.Employee(id=self.emp_2.id, birthday=datetime.date(1980, 5, 11)),
-                employee.types.Employee(id=self.emp_3.id, birthday=datetime.date(1980, 6, 11)),
-                employee.types.Employee(id=self.emp_4.id, birthday=datetime.date(1980, 6, 12)),
+                employee.types.Employee(
+                    id=self.emp_1.id,
+                    birthday=datetime.date(1990, 5, 10),
+                    gender=employee.types.Gender(1),
+                    is_manager=False
+                    ),
+                employee.types.Employee(
+                    id=self.emp_2.id,
+                    birthday=datetime.date(1980, 5, 11),
+                    gender=employee.types.Gender(0),
+                    is_manager=True
+                    ),
+                employee.types.Employee(
+                    id=self.emp_3.id,
+                    birthday=datetime.date(1980, 6, 11),
+                    gender=employee.types.Gender(0),
+                    is_manager=True
+                    ),
+                employee.types.Employee(
+                    id=self.emp_4.id,
+                    birthday=datetime.date(1980, 6, 12),
+                    gender=employee.types.Gender(1),
+                    is_manager=True
+                    ),
             )
         )
 
@@ -157,17 +177,39 @@ class TestExtractExamees(TestCase):
         actual_list = list(actual)
         with self.subTest('5月が誕生日である社員がリストに入ってる'):
             self.assertTrue(
-                employee.types.Employee(id=self.emp_1.id, birthday=datetime.date(1990, 5, 10)) and 
-                employee.types.Employee(id=self.emp_2.id, birthday=datetime.date(1980, 5, 11))
+                employee.types.Employee(
+                    id=self.emp_1.id,
+                    birthday=datetime.date(1990, 5, 10),
+                    gender=employee.types.Gender(1),
+                    is_manager=False
+                    ) and
+                employee.types.Employee(
+                    id=self.emp_2.id,
+                    birthday=datetime.date(1980, 5, 11),
+                    gender=employee.types.Gender(0),
+                    is_manager=True
+                    )
                 in actual_list
             )
             
         with self.subTest('5月が誕生日でない社員がリストに入っている'):
             self.assertFalse(
-                employee.types.Employee(id=self.emp_3.id, birthday=datetime.date(1980, 6, 11)) in actual_list
+                employee.types.Employee(
+                    id=self.emp_3.id,
+                    birthday=datetime.date(1980, 6, 11),
+                    gender=employee.types.Gender(0),
+                    is_manager=True
+                    )
+                in actual_list
             )
             self.assertFalse(
-                employee.types.Employee(id=self.emp_4.id, birthday=datetime.date(1980, 6, 12)) in actual_list
+                employee.types.Employee(
+                    id=self.emp_4.id,
+                    birthday=datetime.date(1980, 6, 12),
+                    gender=employee.types.Gender(1),
+                    is_manager=True
+                    )
+                in actual_list
             )
     
     @unittest.mock.patch('medical_checkup.models.checkup.Manager')
@@ -186,7 +228,13 @@ class TestExtractExamees(TestCase):
         )
         actual_list = list(actual)
         self.assertEqual(
-            [employee.types.Employee(id=self.emp_2.id, birthday=datetime.date(1980,5,11))],
+            [employee.types.Employee(
+                id=self.emp_2.id,
+                birthday=datetime.date(1980,5,11),
+                gender=employee.types.Gender(0),
+                is_manager=True
+                )
+            ],
             actual_list
         )
     

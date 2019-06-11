@@ -70,11 +70,11 @@ class Manager:
 
 class MedicalCheckUp(models.Model):
     MEDICAL_CHECKUP_COURSES = (
-        (0, '35歳未満男女コース'),
-        (1, '35歳以上男性非管理職コース'),
-        (2, '35歳以上女性非管理職コース'),
-        (3, '35歳以上男性管理職コース'),
-        (4, '35歳以上女性管理職コース')
+        (medical_checkup.types.Course.Under35, '35歳未満男女コース'),
+        (medical_checkup.types.Course.Over35Male, '35歳以上男性非管理職コース'),
+        (medical_checkup.types.Course.Over35Female, '35歳以上女性非管理職コース'),
+        (medical_checkup.types.Course.Over35MaleManager, '35歳以上男性管理職コース'),
+        (medical_checkup.types.Course.Over35FemaleManager, '35歳以上女性管理職コース')
     )
     employee = models.ForeignKey(employee.models.employee.Employee, on_delete=models.CASCADE)
     target_year = models.PositiveIntegerField(validators=[MinValueValidator(1900)])  # 対象年

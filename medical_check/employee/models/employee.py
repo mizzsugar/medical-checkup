@@ -15,7 +15,9 @@ class Manager:
     def convert(cls, emp: Employee) -> employee.types.Employee:
         return employee.types.Employee(
             id=emp.id,
-            birthday=emp.birthday
+            birthday=emp.birthday,
+            gender=employee.types.Gender(emp.gender),
+            is_manager=emp.position.is_manager
             )
 
     @classmethod
@@ -23,22 +25,28 @@ class Manager:
         employee_from_repogitory = Employee.objects.get(pk=id)
         return employee.types.Employee(
             id=employee_from_repogitory.id,
-            birthday=employee_from_repogitory.birthday
+            birthday=employee_from_repogitory.birthday,
+            gender=employee.types.Gender(employee_from_repogitory.gender),
+            is_manager=employee_from_repogitory.position.is_manager
             )
 
     @classmethod
     def iter_all(cls) -> Iterator[employee.types.Employee]:
         return (
-            employee.types.Employee(id=employee_from_repogitory.id, birthday=employee_from_repogitory.birthday)
+            employee.types.Employee(
+                id=employee_from_repogitory.id,
+                birthday=employee_from_repogitory.birthday,
+                gender=employee.types.Gender(employee_from_repogitory.gender),
+                is_manager=employee_from_repogitory.position.is_manager
+                )
             for employee_from_repogitory in Employee.objects.iterator()
         )
 
 
 class Employee(models.Model):
     GENDER_CHOICES = (
-        (0, '男性'),
-        (1, '女性'),
-        (2, 'その他')
+        (employee.types.Gender.Male, '男性'),
+        (employee.types.Gender.Female, '女性')
     )
     name = models.TextField()
     gender = models.PositiveSmallIntegerField(choices=GENDER_CHOICES)

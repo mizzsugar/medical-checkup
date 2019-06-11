@@ -34,7 +34,7 @@ class TestEmployeeModel(TestCase):
 
         cls.employee_2 = employee.models.employee.Employee.objects.create(
             name='社員_2',
-            gender=1,
+            gender=0,
             birthday=datetime.date(1990, 2, 2),
             position=cls.position,
             department=cls.department,
@@ -45,15 +45,30 @@ class TestEmployeeModel(TestCase):
     def test_fetch_by_id(self):
         actual = employee.models.employee.Manager.fetch_by_id(self.employee_1.id)
         self.assertEqual(
-            employee.types.Employee(id=self.employee_1.id, birthday=datetime.date(1980, 1, 1)),
+            employee.types.Employee(
+                id=self.employee_1.id,
+                birthday=datetime.date(1980, 1, 1),
+                gender=employee.types.Gender(1),
+                is_manager=True
+                ),
             actual
         )
 
     def test_iter_all(self):
         actual = employee.models.employee.Manager.iter_all()
         expected_employee_list = [
-                employee.types.Employee(id=self.employee_1.id, birthday=datetime.date(1980, 1, 1)),
-                employee.types.Employee(id=self.employee_2.id, birthday=datetime.date(1990, 2, 2)),
+                employee.types.Employee(
+                    id=self.employee_1.id,
+                    birthday=datetime.date(1980, 1, 1),
+                    gender=employee.types.Gender(1),
+                    is_manager=True
+                    ),
+                employee.types.Employee(
+                    id=self.employee_2.id,
+                    birthday=datetime.date(1990, 2, 2),
+                    gender=employee.types.Gender(0),
+                    is_manager=True
+                    ),
             ]
         self.assertEqual(
             expected_employee_list,
@@ -67,7 +82,9 @@ class TestEmployeeModel(TestCase):
         self.assertEqual(
             employee.types.Employee(
                 id=self.employee_1.id,
-                birthday=datetime.date(1980, 1, 1)
+                birthday=datetime.date(1980, 1, 1),
+                gender=employee.types.Gender(1),
+                is_manager=True
             ),
             actual
         )

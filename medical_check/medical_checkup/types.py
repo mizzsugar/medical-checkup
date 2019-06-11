@@ -1,8 +1,17 @@
 from dataclasses import dataclass
 from typing import NewType
+import enum
 import datetime
 
 import employee.types
+
+
+class Course(enum.IntEnum):
+    Under35 = 0
+    Over35Male = 1
+    Over35Female = 2
+    Over35MaleManager = 3
+    Over35FemaleManager = 5
 
 
 @dataclass(frozen=True)
@@ -28,7 +37,7 @@ class MedicalCheckUpValue:
     target_year: int
     conducted_year: int
     conducted_month: int
-    course: int  # TODO:IntEnumにする
+    course: Course
     is_reexamination: bool
     location: str
     consultation_date: datetime.date

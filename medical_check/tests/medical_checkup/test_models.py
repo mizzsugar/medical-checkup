@@ -279,7 +279,12 @@ class TestMedicalCheckUp(TestCase):
     def test_emp_id_does_not_match(self):
         with self.assertRaises(employee.models.employee.Employee.DoesNotExist):
             updated_checkup = medical_checkup.types.MedicalCheckUpValue(
-                    employee=employee.types.Employee(id=100, birthday=datetime.date(2000, 1, 1)),
+                    employee=employee.types.Employee(
+                        id=100,
+                        birthday=datetime.date(2000, 1, 1),
+                        gender=employee.types.Gender(1),
+                        is_manager=False
+                        ),
                     target_year=2019,
                     conducted_year=2019,
                     conducted_month=5,
