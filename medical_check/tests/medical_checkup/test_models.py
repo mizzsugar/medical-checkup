@@ -127,6 +127,38 @@ class TestMedicalCheckUp(TestCase):
             self.converted_check_up_3,
         ]
         self.assertEqual(expected, list(actual))
+
+    def test_save_new_checkup(self):
+        new_checkup = medical_checkup.types.MedicalCheckUpValue(
+                employee=employee.models.employee.Manager.convert(self.emp_1),
+                target_year=2018,
+                conducted_year=2018,
+                conducted_month=5,
+                course=4,
+                is_reexamination=True,
+                location='東京クリニック',
+                consultation_date=datetime.date(2018, 5, 16),
+                need_reexamination=False,
+                judgement_date=datetime.date(2018, 6, 15)
+        )
+        medical_checkup.models.checkup.Manager.save(
+            mc=new_checkup
+        )
+        self.assertTrue(
+            medical_checkup.models.checkup.MedicalCheckUp.objects.get(
+                employee_id=self.emp_1.id,
+                target_year=2018,
+                conducted_year=2018,
+                conducted_month=5
+            )
+        )
+        
+    
+    def test_save_existing_checkup(self):
+        pass
+
+    def test_emp_id_does_not_match(self):
+        pass
         
     @classmethod
     def tearDownClass(cls):

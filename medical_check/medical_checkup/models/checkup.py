@@ -26,6 +26,43 @@ class Manager:
             for medcial_checkup_from_repogitory in MedicalCheckUp.objects.iterator()
         )
 
+    @classmethod
+    def save(cls, mc: medical_checkup.types.MedicalCheckUpValue) -> None:
+        try:
+            emp_from_repogitory = employee.models.employee.Employee.objects.get(pk=mc.employee.id)
+        except employee.models.employee.Employee.DoesNotExist:
+            # エラー吐く
+            raise
+        try:
+            mc_from_repogitory = MedicalCheckUp.objects.get(
+                employee=emp_from_repogitory,
+                target_year=mc.target_year,
+                conducted_year=mc.conducted_year,
+                conducted_month=mc.conducted_month
+            )
+            
+        except MedicalCheckUp.DoesNotExist:
+            MedicalCheckUp.objects.create(
+                employee=emp_from_repogitory,
+                target_year=mc.target_year,
+                conducted_year=mc.conducted_year,
+                conducted_month=mc.conducted_month,
+                course=mc.course,
+                is_reexamination=mc.is_reexamination,
+                location=mc.location,
+                consultation_date=mc.consultation_date,
+                need_reexamination=mc.need_reexamination,
+                judgement_date=mc.judgement_date
+            )
+        else:
+            mc_from_repogitory.course = mc.course
+            mc_from_repogitory.is_reexamination = mc.is_reexamination
+            mc_from_repogitory.location = mc.location
+            mc_from_repogitory.consultation_date = mc.consultation_date
+            mc_from_repogitory.need_reexamination = mc.need_reexamination
+            mc_from_repogitory.judgement_date = mc.judgement_date
+            mc_from_repogitory.save()
+
 
 class MedicalCheckUp(models.Model):
     MEDICAL_CHECKUP_COURSES = (
@@ -48,16 +85,15 @@ class MedicalCheckUp(models.Model):
 
     class Meta:
         db_table = 'medical_checkups'
-        unique_together = [['employee','target_year', 'conducted_year', 'conducted_month']]
-        # constraints = [
-        #     models.UniqueConstraint(
-        #         fields=['employee','target_year', 'conducted_year', 'conducted_month'], name='unique_medical_checkup_employee'
-        #         ),
-        # ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=['employee','target_year', 'conducted_year', 'conducted_month'], name='unique_medical_checkup_employee'
+                ),
+        ]
 
-        # indexes = [
-        #     models.Index(fields=['employee','target_year', 'conducted_year', 'conducted_month'])
-        # ]
+        indexes = [
+            models.Index(fields=['employee','target_year', 'conducted_year', 'conducted_month'])
+        ]
     
     def __str__(self):
         return f'{self.employee} 対象年{self.target_year} 実施年月{self.conducted_year}/{self.conducted_month}'
