@@ -11,7 +11,7 @@ class Course(enum.IntEnum):
     Over35Male = 1
     Over35Female = 2
     Over35MaleManager = 3
-    Over35FemaleManager = 5
+    Over35FemaleManager = 4
 
 
 @dataclass(frozen=True)

@@ -30,12 +30,17 @@ def iter_reexamine_employees(conducted_year: int, conducted_month: int) -> Itera
 # (1)3 ①と②で抽出した従業員を受診対象者とし，健康診断コースを決定する。
 def designate_course(
     emp: employee.types.Employee,
-    target_year: int,
-    conducted_year: int,
-    conducted_month: int
+    date: datetime.date
     ) -> medical_checkup.types.Course:
-    pass
-    
+    if emp.get_age(date=date) < 35:
+        return medical_checkup.types.Course.Under35
+    if emp.gender==employee.types.Gender.Male:
+        if emp.is_manager:
+            return medical_checkup.types.Course.Over35MaleManager
+        return medical_checkup.types.Course.Over35Male
+    if emp.is_manager:
+        return medical_checkup.types.Course.Over35FemaleManager
+    return medical_checkup.types.Course.Over35Female
 
 # (1)4 受診日を決定し，受診対象者の健康診断レコードを健康管理システムに登録する。
 # 受診日の決め方が仕様書に書いていないのでひとまず当月の月末にする
