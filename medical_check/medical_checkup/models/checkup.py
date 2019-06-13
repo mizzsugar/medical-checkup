@@ -85,7 +85,7 @@ class MedicalCheckUp(models.Model):
     location = models.TextField()  # 健康診断実施場所
     consultation_date = models.DateField()  # 健康診断実施日
     need_reexamination = models.BooleanField(default=False)
-    judgement_date = models.DateField()  # 判定年月日
+    judgement_date = models.DateField(null=True, blank=True)  # 判定年月日
 
     class Meta:
         db_table = 'medical_checkups'
