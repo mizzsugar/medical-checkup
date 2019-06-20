@@ -1,6 +1,8 @@
 from typing import Iterator, Iterable
 import datetime
+import itertools
 
+from dateutil.relativedelta import relativedelta
 
 import employee.types
 import employee.models.employee
@@ -27,8 +29,26 @@ def iter_reexamine_employees(conducted_year: int, conducted_month: int) -> Itera
         if mc.conducted_year==conducted_year and mc.conducted_month==conducted_month and mc.need_reexamination
     )
 
-# 特定の月の健康診断対象社を出力する ((1)3 ①と②で抽出した従業員を受診対象者をまとめて出力する)
 
+# 特定の月の健康診断対象社を出力する ((1)3 ①と②で抽出した従業員を受診対象者をまとめて出力する)
+def iter_month_examined_employees(conducted_year: int, conducted_month: int) -> Iterator[employee.types.Employee]:
+    """特定の月の健康診断対象社を出力する ((1)3 ①と②で抽出した従業員を受診対象者をまとめて出力する)
+
+    前月を取得する箇所では、日は特に指定していないのでとりあえず1日にしている
+
+    params:
+    conducted_year: int 実施年
+    conducted_month: int 実施月
+
+    returns
+    Iterator[employee.types.Employee]
+    対象従業員のイテレータ
+    """
+    last_month = datetime.date(conducted_year, conducted_month, 1) - relativedelta(months=1)
+    return itertools.chain(
+        iter_birthday_month_employees(conducted_month=conducted_month),
+        iter_reexamine_employees(conducted_year=last_month.year, conducted_month=last_month.month)
+    )
 
 # 1人の従業員に対して健康診断コースを決定する
 def designate_course(
