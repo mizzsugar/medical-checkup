@@ -15,6 +15,7 @@ class Manager:
     def convert(cls, emp: Employee) -> employee.types.Employee:
         return employee.types.Employee(
             id=emp.id,
+            name=emp.name,
             birthday=emp.birthday,
             gender=employee.types.Gender(emp.gender),
             is_manager=emp.position.is_manager
@@ -25,6 +26,7 @@ class Manager:
         employee_from_repogitory = Employee.objects.get(pk=id)
         return employee.types.Employee(
             id=employee_from_repogitory.id,
+            name=employee_from_repogitory.name,
             birthday=employee_from_repogitory.birthday,
             gender=employee.types.Gender(employee_from_repogitory.gender),
             is_manager=employee_from_repogitory.position.is_manager
@@ -35,6 +37,7 @@ class Manager:
         return (
             employee.types.Employee(
                 id=employee_from_repogitory.id,
+                name=employee_from_repogitory.name,
                 birthday=employee_from_repogitory.birthday,
                 gender=employee.types.Gender(employee_from_repogitory.gender),
                 is_manager=employee_from_repogitory.position.is_manager

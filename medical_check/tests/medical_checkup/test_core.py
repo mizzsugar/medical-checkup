@@ -152,24 +152,28 @@ class TestExtractExamees(TestCase):
             (
                 employee.types.Employee(
                     id=self.emp_1.id,
+                    name=self.emp_1.name,
                     birthday=datetime.date(1990, 5, 10),
                     gender=employee.types.Gender(1),
                     is_manager=False
                     ),
                 employee.types.Employee(
                     id=self.emp_2.id,
+                    name=self.emp_2.name,
                     birthday=datetime.date(1980, 5, 11),
                     gender=employee.types.Gender(0),
                     is_manager=True
                     ),
                 employee.types.Employee(
                     id=self.emp_3.id,
+                    name=self.emp_3.name,
                     birthday=datetime.date(1980, 6, 11),
                     gender=employee.types.Gender(0),
                     is_manager=True
                     ),
                 employee.types.Employee(
                     id=self.emp_4.id,
+                    name=self.emp_4.name,
                     birthday=datetime.date(1980, 6, 12),
                     gender=employee.types.Gender(1),
                     is_manager=True
@@ -183,12 +187,14 @@ class TestExtractExamees(TestCase):
             self.assertTrue(
                 employee.types.Employee(
                     id=self.emp_1.id,
+                    name=self.emp_1.name,
                     birthday=datetime.date(1990, 5, 10),
                     gender=employee.types.Gender(1),
                     is_manager=False
                     ) and
                 employee.types.Employee(
                     id=self.emp_2.id,
+                    name=self.emp_2.name,
                     birthday=datetime.date(1980, 5, 11),
                     gender=employee.types.Gender(0),
                     is_manager=True
@@ -200,6 +206,7 @@ class TestExtractExamees(TestCase):
             self.assertFalse(
                 employee.types.Employee(
                     id=self.emp_3.id,
+                    name=self.emp_3.name,
                     birthday=datetime.date(1980, 6, 11),
                     gender=employee.types.Gender(0),
                     is_manager=True
@@ -209,6 +216,7 @@ class TestExtractExamees(TestCase):
             self.assertFalse(
                 employee.types.Employee(
                     id=self.emp_4.id,
+                    name=self.emp_4.name,
                     birthday=datetime.date(1980, 6, 12),
                     gender=employee.types.Gender(1),
                     is_manager=True
@@ -234,6 +242,7 @@ class TestExtractExamees(TestCase):
         self.assertEqual(
             [employee.types.Employee(
                 id=self.emp_2.id,
+                name=self.emp_2.name,
                 birthday=datetime.date(1980,5,11),
                 gender=employee.types.Gender(0),
                 is_manager=True

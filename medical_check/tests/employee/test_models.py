@@ -51,6 +51,7 @@ class TestEmployeeModel(TestCase):
         self.assertEqual(
             employee.types.Employee(
                 id=self.employee_1.id,
+                name=self.employee_1.name,
                 birthday=datetime.date(1980, 1, 1),
                 gender=employee.types.Gender(1),
                 is_manager=True
@@ -63,12 +64,14 @@ class TestEmployeeModel(TestCase):
         expected_employee_list = [
                 employee.types.Employee(
                     id=self.employee_1.id,
+                    name=self.employee_1.name,
                     birthday=datetime.date(1980, 1, 1),
                     gender=employee.types.Gender(1),
                     is_manager=True
                     ),
                 employee.types.Employee(
                     id=self.employee_2.id,
+                    name=self.employee_2.name,
                     birthday=datetime.date(1990, 2, 2),
                     gender=employee.types.Gender(0),
                     is_manager=True
@@ -86,6 +89,7 @@ class TestEmployeeModel(TestCase):
         self.assertEqual(
             employee.types.Employee(
                 id=self.employee_1.id,
+                name=self.employee_1.name,
                 birthday=datetime.date(1980, 1, 1),
                 gender=employee.types.Gender(1),
                 is_manager=True

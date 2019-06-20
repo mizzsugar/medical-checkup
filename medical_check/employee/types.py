@@ -11,6 +11,7 @@ class Gender(enum.IntEnum):
 @dataclass(frozen=True)
 class Employee:
     id: int
+    name: str
     birthday: datetime.date
     gender: Gender
     is_manager: bool

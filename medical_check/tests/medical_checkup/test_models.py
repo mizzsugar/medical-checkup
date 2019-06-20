@@ -285,6 +285,7 @@ class TestMedicalCheckUp(TestCase):
             updated_checkup = medical_checkup.types.MedicalCheckUpValue(
                     employee=employee.types.Employee(
                         id=100,
+                        name='dummy',
                         birthday=datetime.date(2000, 1, 1),
                         gender=employee.types.Gender(1),
                         is_manager=False
