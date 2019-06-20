@@ -177,7 +177,7 @@ class TestExtractExamees(TestCase):
             )
         )
 
-        actual = medical_checkup.core.extract_examinee.iter_birthday_month_employees(today=datetime.date(2019, 5, 1))
+        actual = medical_checkup.core.extract_examinee.iter_birthday_month_employees(conducted_month=5)
         actual_list = list(actual)
         with self.subTest('5月が誕生日である社員がリストに入ってる'):
             self.assertTrue(
