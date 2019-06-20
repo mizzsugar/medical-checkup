@@ -8,6 +8,10 @@ import employee.types
 
 class TestEmployeeModel(TestCase):
     @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+    @classmethod
     def setUpTestData(cls):
         cls.position = employee.models.position.Position.objects.create(
             name='課長',
@@ -91,4 +95,4 @@ class TestEmployeeModel(TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        pass
+        super().tearDownClass()

@@ -15,6 +15,10 @@ import employee.types
 
 class TestDesignateCourse(TestCase):
     @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+    @classmethod
     def setUpTestData(cls):
         cls.position = employee.models.position.Position.objects.create(
             name='メンバー',
@@ -53,7 +57,7 @@ class TestDesignateCourse(TestCase):
             name='Taro',
             gender=0,
             birthday=datetime.date(1984,5,11), # 2019/06/01時点で35とする
-            position=cls.position_2,
+            position=cls.position,
             department=cls.dept_2,
             work_location=cls.work_location
         )
@@ -63,7 +67,7 @@ class TestDesignateCourse(TestCase):
             name='Sakurako',
             gender=1,
             birthday=datetime.date(1984,5,11), # 2019/06/01時点で35とする
-            position=cls.position_2,
+            position=cls.position,
             department=cls.dept_2,
             work_location=cls.work_location
         )
@@ -89,7 +93,7 @@ class TestDesignateCourse(TestCase):
         )
 
 
-    def test_designate_course(self, mock_manager):
+    def test_designate_course(self):
         with self.subTest('35歳以下'):
             self.assertEqual(
                 medical_checkup.types.Course(0),
@@ -138,4 +142,4 @@ class TestDesignateCourse(TestCase):
     
     @classmethod
     def tearDownClass(cls):
-        pass
+        super().tearDownClass()
