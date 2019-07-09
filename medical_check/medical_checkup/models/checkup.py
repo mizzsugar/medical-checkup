@@ -1,3 +1,4 @@
+from __future__ import annotations
 from typing import Iterator
 
 from django.db import models
@@ -25,14 +26,55 @@ class Manager:
             for medcial_checkup_from_repogitory in MedicalCheckUp.objects.iterator()
         )
 
+    @classmethod
+    def save(cls, mc: medical_checkup.types.MedicalCheckUpValue) -> None:
+        """フォームや自動登録機能によって送られた健診データを保存するメソッドです。
+
+        update_or_createにしたかったのですが、
+        UniqueConstraintのバグを踏んでしまったようでできませんでした・・・
+        """
+        try:
+            emp_from_repogitory = employee.models.employee.Employee.objects.get(pk=mc.employee.id)
+        except employee.models.employee.Employee.DoesNotExist:
+            raise
+        try:
+            mc_from_repogitory = MedicalCheckUp.objects.get(
+                employee=emp_from_repogitory,
+                target_year=mc.target_year,
+                conducted_year=mc.conducted_year,
+                conducted_month=mc.conducted_month
+            )
+            
+        except MedicalCheckUp.DoesNotExist:
+            MedicalCheckUp.objects.create(
+                employee=emp_from_repogitory,
+                target_year=mc.target_year,
+                conducted_year=mc.conducted_year,
+                conducted_month=mc.conducted_month,
+                course=mc.course,
+                is_reexamination=mc.is_reexamination,
+                location=mc.location,
+                consultation_date=mc.consultation_date,
+                need_reexamination=mc.need_reexamination,
+                judgement_date=mc.judgement_date
+            )
+        else:
+            mc_from_repogitory.course = mc.course
+            mc_from_repogitory.is_reexamination = mc.is_reexamination
+            mc_from_repogitory.location = mc.location
+            mc_from_repogitory.consultation_date = mc.consultation_date
+            mc_from_repogitory.need_reexamination = mc.need_reexamination
+            mc_from_repogitory.judgement_date = mc.judgement_date
+            mc_from_repogitory.save()
+
 
 class MedicalCheckUp(models.Model):
     MEDICAL_CHECKUP_COURSES = (
-        (0, '35歳未満男女コース'),
-        (1, '35歳以上男性非管理職コース'),
-        (2, '35歳以上女性非管理職コース'),
-        (3, '35歳以上男性管理職コース'),
-        (4, '35歳以上女性管理職コース')
+        (medical_checkup.types.Course.Under35, '35歳未満男女コース'),
+        (medical_checkup.types.Course.Over35Male, '35歳以上男性非管理職コース'),
+        (medical_checkup.types.Course.Over35Female, '35歳以上女性非管理職コース'),
+        (medical_checkup.types.Course.Over35MaleManager, '35歳以上男性管理職コース'),
+        (medical_checkup.types.Course.Over35FemaleManager, '35歳以上女性管理職コース')
     )
     employee = models.ForeignKey(employee.models.employee.Employee, on_delete=models.CASCADE)
     target_year = models.PositiveIntegerField(validators=[MinValueValidator(1900)])  # 対象年
@@ -43,20 +85,19 @@ class MedicalCheckUp(models.Model):
     location = models.TextField()  # 健康診断実施場所
     consultation_date = models.DateField()  # 健康診断実施日
     need_reexamination = models.BooleanField(default=False)
-    judgement_date = models.DateField()  # 判定年月日
+    judgement_date = models.DateField(null=True, blank=True)  # 判定年月日
 
     class Meta:
         db_table = 'medical_checkups'
-        unique_together = [['employee','target_year', 'conducted_year', 'conducted_month']]
-        # constraints = [
-        #     models.UniqueConstraint(
-        #         fields=['employee','target_year', 'conducted_year', 'conducted_month'], name='unique_medical_checkup_employee'
-        #         ),
-        # ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=['employee','target_year', 'conducted_year', 'conducted_month'], name='unique_medical_checkup_employee'
+                ),
+        ]
 
-        # indexes = [
-        #     models.Index(fields=['employee','target_year', 'conducted_year', 'conducted_month'])
-        # ]
+        indexes = [
+            models.Index(fields=['employee','target_year', 'conducted_year', 'conducted_month'])
+        ]
     
     def __str__(self):
         return f'{self.employee} 対象年{self.target_year} 実施年月{self.conducted_year}/{self.conducted_month}'
