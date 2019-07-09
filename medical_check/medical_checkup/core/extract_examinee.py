@@ -30,7 +30,7 @@ def iter_reexamine_employees(conducted_year: int, conducted_month: int) -> Itera
     )
 
 
-# 特定の月の健康診断対象社を出力する ((1)3 ①と②で抽出した従業員を受診対象者をまとめて出力する)
+# 特定の月の健康診断対象者を出力する ((1)3 ①と②で抽出した従業員を受診対象者をまとめて出力する)
 def iter_month_examined_employees(conducted_year: int, conducted_month: int) -> Iterator[employee.types.Employee]:
     """特定の月の健康診断対象社を出力する ((1)3 ①と②で抽出した従業員を受診対象者をまとめて出力する)
 
@@ -69,6 +69,10 @@ def designate_course(
 # 受診日の決め方が仕様書に書いていないのでひとまず当月の月末にする
 
 
+# 指定された月の月末を取得する
+def get_last_day(date: datetime.date) -> datetime.date:
+    return datetime.date(date.year, date.month+1, 1) - datetime.timedelta(days=1)
+
 # 当月誕生日の人の健康診断を登録する
 def register_birthday_month_employee_checkup(
     emp: employee.types.Employee,
@@ -84,7 +88,7 @@ def register_birthday_month_employee_checkup(
         location=employee.models.employee.Manager.fetch_medical_checkup_location(
             employee_id=emp.id
         ),
-        consultation_date=mc.consultation_date,  # 特に仕様書に指定がないのでひとまず月末指定
+        consultation_date=get_last_day(date=date),  # 特に仕様書に指定がないのでひとまず月末指定
         need_reexamination=False,  # デフォルト値であるFalseを入力
         judgement_date=None  # まだ判定されていないので登録不可
     )
@@ -108,7 +112,7 @@ def register_reexamine_checkup(
         location=employee.models.employee.Manager.fetch_medical_checkup_location(
             employee_id=emp.id
         ),
-        consultation_date=mc.consultation_date,  # 特に仕様書に指定がないのでひとまずdateの月の月末指定
+        consultation_date=get_last_day(date=date),  # 特に仕様書に指定がないのでひとまずdateの月の月末指定
         need_reexamination=False,  # デフォルト値であるFalseを入力
         judgement_date=None  # まだ判定されていないので登録不可
     )
@@ -118,3 +122,14 @@ def register_reexamine_checkup(
 
 
 # (1)用のView関数で呼び出されるエントリーポイントとなる関数
+def reserve_medical_checkup(date: datetime.date) -> None:
+    # 当月誕生日の人を抽出、健康診断を予約
+    for emp in iter_birthday_month_employees(conducted_month=date.month):
+        register_birthday_month_employee_checkup(emp=emp, date=date)
+    
+    # 前月の定期健康診断において，再検査が必要と判定された従業員を抽出、健康診断を予約
+    for emp in iter_reexamine_employees(
+        conducted_year=date.year,
+        conducted_month=date.month
+    ):
+        register_reexamine_checkup(emp=emp, date=date)
