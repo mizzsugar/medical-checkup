@@ -52,11 +52,17 @@ class ExamineeList(APIView):
         )
 
     def post(self, request):
-        print('-----------------')
         print(request.GET.get('year'))
         print(request.GET.get('month'))
+        if request.GET.get('year') is None and request.GET.get('month') is None:
+            today = datetime.date.today()
+            medical_checkup.core.extract_examinee.reserve_medical_checkup(date=today)
+        else:
+            year = int(request.GET.get('year')
+            month = int(request.GET.get('month'))
+            medical_checkup.core.extract_examinee.reserve_medical_checkup(date=datetime.date(year, month, 1))
         return Response(
             {
-                'examinees': []
+                'message': '予約しました'
             }
         )
