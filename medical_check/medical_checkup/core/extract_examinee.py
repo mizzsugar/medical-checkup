@@ -74,7 +74,23 @@ def register_birthday_month_employee_checkup(
     emp: employee.types.Employee,
     date: datetime.date
 ) -> None:
-    pass
+    mc = medical_checkup.types.MedicalCheckUpValue(
+        employee=emp,
+        target_year=date.year,  # 年またいだ場合のことを考えるともうちょっと配慮する必要あり
+        conducted_year=date.year,
+        conducted_month=date.month,
+        course=designate_course(emp, date),
+        is_reexamination=False,
+        location=employee.models.employee.Manager.fetch_medical_checkup_location(
+            employee_id=emp.id
+        ),
+        consultation_date=mc.consultation_date,  # 特に仕様書に指定がないのでひとまず月末指定
+        need_reexamination=False,  # デフォルト値であるFalseを入力
+        judgement_date=None  # まだ判定されていないので登録不可
+    )
+    medical_checkup.models.checkup.Manager.save(
+        mc=mc
+    )
 
 
 # 再検査の人の健康診断を登録する
@@ -89,8 +105,10 @@ def register_reexamine_checkup(
         conducted_month=date.month,
         course=designate_course(emp, date),
         is_reexamination=True,
-        location=mc.location,
-        consultation_date=mc.consultation_date,  # 特に仕様書に指定がないのでひとまず月末指定
+        location=employee.models.employee.Manager.fetch_medical_checkup_location(
+            employee_id=emp.id
+        ),
+        consultation_date=mc.consultation_date,  # 特に仕様書に指定がないのでひとまずdateの月の月末指定
         need_reexamination=False,  # デフォルト値であるFalseを入力
         judgement_date=None  # まだ判定されていないので登録不可
     )

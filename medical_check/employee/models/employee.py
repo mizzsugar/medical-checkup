@@ -21,6 +21,11 @@ class Manager:
             gender=employee.types.Gender(emp.gender),
             is_manager=emp.position.is_manager
         )
+    
+    @classmethod
+    def fetch_medical_checkup_location(cls, employee_id: int) -> str:
+        employee = Employee.objects.get(pk=employee_id)
+        return employee.work_location.medical_checkup_location
 
     @classmethod
     def fetch_by_id(cls, id: int) -> employee.types.Employee:

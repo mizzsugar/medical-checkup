@@ -1,4 +1,5 @@
 import datetime
+import json
 
 from django.http import HttpResponse
 from rest_framework.views import APIView
@@ -47,5 +48,15 @@ class ExamineeList(APIView):
         return Response(
             {
                 'examinees': examinees
+            }
+        )
+
+    def post(self, request):
+        print('-----------------')
+        print(request.GET.get('year'))
+        print(request.GET.get('month'))
+        return Response(
+            {
+                'examinees': []
             }
         )

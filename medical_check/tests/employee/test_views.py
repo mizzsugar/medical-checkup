@@ -9,7 +9,7 @@ import employee.models.work_location
 import employee.types
 
 
-class TestEmployeeModel(TestCase):
+class TestEmployeeViews(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
