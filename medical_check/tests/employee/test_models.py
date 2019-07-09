@@ -1,10 +1,13 @@
 import datetime
 from django.test import TestCase
+
 import employee.models.employee
 import employee.models.position
 import employee.models.department
 import employee.models.work_location
 import employee.types
+import employee.core.exceptions
+
 
 class TestEmployeeModel(TestCase):
     @classmethod
@@ -92,6 +95,67 @@ class TestEmployeeModel(TestCase):
                 name=self.employee_1.name,
                 birthday=datetime.date(1980, 1, 1),
                 gender=employee.types.Gender(1),
+                is_manager=True
+            ),
+            actual
+        )
+    
+    def test_create_employee_location_not_exist(self):
+        with self.assertRaises(employee.core.exceptions.ObjectDoesNotExist):
+            employee.models.employee.Manager.create(
+                draft_employee=employee.types.DraftEmployee(    
+                    name='高橋 次郎',
+                    gender=0,
+                    birthday=datetime.date(1970, 5, 11),
+                    position=1,
+                    department=1,
+                    work_location=100
+            )
+        )
+
+    def test_create_employee_department_not_exist(self):
+        with self.assertRaises(employee.core.exceptions.ObjectDoesNotExist):
+            employee.models.employee.Manager.create(
+                draft_employee=employee.types.DraftEmployee(    
+                    name='高橋 次郎',
+                    gender=0,
+                    birthday=datetime.date(1970, 5, 11),
+                    position=1,
+                    department=100,
+                    work_location=1
+            )
+        )
+
+    def test_create_employee_position_not_exist(self):
+        with self.assertRaises(employee.core.exceptions.ObjectDoesNotExist):
+            employee.models.employee.Manager.create(
+                draft_employee=employee.types.DraftEmployee(    
+                    name='高橋 次郎',
+                    gender=0,
+                    birthday=datetime.date(1970, 5, 11),
+                    position=100,
+                    department=1,
+                    work_location=1
+            )
+        )
+
+    def test_create_employee_valid(self):
+        actual = employee.models.employee.Manager.create(
+            draft_employee=employee.types.DraftEmployee(    
+                name='高橋 次郎',
+                gender=0,
+                birthday=datetime.date(1970, 5, 11),
+                position=1,
+                department=1,
+                work_location=1
+            )
+        )
+        self.assertEqual(
+            employee.types.Employee(
+                id=3,
+                name='高橋 次郎',
+                birthday=datetime.date(1970, 5, 11),
+                gender=0,
                 is_manager=True
             ),
             actual

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import datetime
 import enum
+from typing import Dict
 
 
 class Gender(enum.IntEnum):
@@ -9,7 +10,21 @@ class Gender(enum.IntEnum):
 
 
 @dataclass(frozen=True)
+class DraftEmployee:
+    """従業員の登録用のクラスです
+    """
+    name: str
+    birthday: datetime.date
+    gender: int
+    position: int
+    department: int
+    work_location: int
+    
+
+@dataclass(frozen=True)
 class Employee:
+    """健康診断登録・編集に利用する従業員のデータのクラスです
+    """
     id: int
     name: str
     birthday: datetime.date
