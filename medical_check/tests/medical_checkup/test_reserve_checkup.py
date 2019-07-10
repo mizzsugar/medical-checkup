@@ -27,7 +27,7 @@ class TestReserveCheckup(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        emp_ birth_this_month= employee.types.Employee(
+        emp_birth_this_month= employee.types.Employee(
             id=1,
             name='taro yamada',
             birthday=datetime.date(1980, 7, 1),

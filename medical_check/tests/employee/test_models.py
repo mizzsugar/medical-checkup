@@ -160,6 +160,14 @@ class TestEmployeeModel(TestCase):
             ),
             actual
         )
+    
+    def test_fetch_medical_checkup_location(self):
+        self.assertEqual(
+            '東京都板橋区サンプル1丁目4番地10号',
+            employee.models.employee.Manager.fetch_medical_checkup_location(
+                employee_id=self.employee_1.id
+            )
+        )
 
     @classmethod
     def tearDownClass(cls):
