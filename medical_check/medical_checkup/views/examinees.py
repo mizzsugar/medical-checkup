@@ -58,7 +58,7 @@ class ExamineeList(APIView):
             today = datetime.date.today()
             medical_checkup.core.extract_examinee.reserve_medical_checkup(date=today)
         else:
-            year = int(request.GET.get('year')
+            year = int(request.GET.get('year'))
             month = int(request.GET.get('month'))
             medical_checkup.core.extract_examinee.reserve_medical_checkup(date=datetime.date(year, month, 1))
         return Response(
