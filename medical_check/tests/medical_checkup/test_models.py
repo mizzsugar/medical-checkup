@@ -6,6 +6,7 @@ import employee.models.position
 import employee.models.department
 import employee.models.work_location
 import medical_checkup.models.checkup
+import medical_checkup.types
 
 
 class TestMedicalCheckUp(TestCase):
@@ -102,7 +103,12 @@ class TestMedicalCheckUp(TestCase):
             target_year=2019,
             conducted_year=2019,
             conducted_month=5,
-            need_reexamination=False
+            course=medical_checkup.types.Course.Under35,
+            is_reexamination=False,
+            location='東京都クリニック',
+            consultation_date=datetime.date(2019,6,15),
+            need_reexamination=False,
+            judgement_date=datetime.date(2019,6,30)
         )
 
         cls.converted_check_up_2 = medical_checkup.types.MedicalCheckUp(
@@ -111,7 +117,12 @@ class TestMedicalCheckUp(TestCase):
             target_year=2019,
             conducted_year=2019,
             conducted_month=5,
-            need_reexamination=True
+            course=medical_checkup.types.Course.Over35MaleManager,
+            is_reexamination=False,
+            location='東京都クリニック',
+            consultation_date=datetime.date(2019,6,15),
+            need_reexamination=True,
+            judgement_date=datetime.date(2019,6,30)
         )
 
         cls.converted_check_up_3 = medical_checkup.types.MedicalCheckUp(
@@ -120,17 +131,22 @@ class TestMedicalCheckUp(TestCase):
             target_year=2018,
             conducted_year=2018,
             conducted_month=5,
-            need_reexamination=False
+            course=medical_checkup.types.Course.Under35,
+            is_reexamination=False,
+            location='東京都クリニック',
+            consultation_date=datetime.date(2018,6,15),
+            need_reexamination=True,
+            judgement_date=datetime.date(2018,6,30)
         )
 
-    def test_iter_all(self):
-        actual = medical_checkup.models.checkup.Manager.iter_all()
-        expected = [
+    def test_convert(self):
+        actual = medical_checkup.models.checkup.Manager.convert(
+            medcial_checkup_from_repogitory=self.check_up_1
+        )
+        self.assertEqual(
             self.converted_check_up_1,
-            self.converted_check_up_2,
-            self.converted_check_up_3,
-        ]
-        self.assertEqual(expected, list(actual))
+            actual
+        )
 
     def test_save_new_checkup(self):
         new_checkup = medical_checkup.types.MedicalCheckUpValue(

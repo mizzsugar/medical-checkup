@@ -1,5 +1,8 @@
 from dataclasses import dataclass
-from typing import NewType
+from typing import (
+    NewType,
+    Optional
+)
 import enum
 import datetime
 
@@ -26,7 +29,12 @@ class MedicalCheckUp:
     target_year: int
     conducted_year: int
     conducted_month: int
+    course: Course
+    is_reexamination: bool
+    location: str
+    consultation_date: datetime.date
     need_reexamination: bool
+    judgement_date: Optional[datetime.date]
 
 
 @dataclass(frozen=True)
@@ -42,4 +50,4 @@ class MedicalCheckUpValue:
     location: str
     consultation_date: datetime.date
     need_reexamination: bool
-    judgement_date: datetime.date
+    judgement_date: Optional[datetime.date]

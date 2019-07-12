@@ -114,9 +114,9 @@ class TestExtractExamees(TestCase):
             course=0,
             is_reexamination=False,
             location='東京都クリニック',
-            consultation_date=datetime.date(2019,6,15),
+            consultation_date=datetime.date(2018,6,15),
             need_reexamination=False,
-            judgement_date=datetime.date(2019,6,30)
+            judgement_date=datetime.date(2018,6,30)
         )
 
         cls.converted_check_up_1 = medical_checkup.types.MedicalCheckUp(
@@ -125,7 +125,12 @@ class TestExtractExamees(TestCase):
             target_year=2019,
             conducted_year=2019,
             conducted_month=5,
-            need_reexamination=False
+            course=medical_checkup.types.Course.Under35,
+            is_reexamination=False,
+            location='東京都クリニック',
+            consultation_date=datetime.date(2019,6,15),
+            need_reexamination=False,
+            judgement_date=datetime.date(2019,6,30)
         )
 
         cls.converted_check_up_2 = medical_checkup.types.MedicalCheckUp(
@@ -134,7 +139,12 @@ class TestExtractExamees(TestCase):
             target_year=2019,
             conducted_year=2019,
             conducted_month=5,
-            need_reexamination=True
+            course=medical_checkup.types.Course.Over35MaleManager,
+            is_reexamination=False,
+            location='東京都クリニック',
+            consultation_date=datetime.date(2019,6,15),
+            need_reexamination=True,
+            judgement_date=datetime.date(2019,6,30)
         )
 
         cls.converted_check_up_3 = medical_checkup.types.MedicalCheckUp(
@@ -143,7 +153,12 @@ class TestExtractExamees(TestCase):
             target_year=2018,
             conducted_year=2018,
             conducted_month=5,
-            need_reexamination=False
+            course=medical_checkup.types.Course.Under35,
+            is_reexamination=False,
+            location='東京都クリニック',
+            consultation_date=datetime.date(2018,6,15),
+            need_reexamination=True,
+            judgement_date=datetime.date(2018,6,30)
         )
 
     @unittest.mock.patch('employee.models.employee.Manager')

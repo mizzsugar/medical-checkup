@@ -12,17 +12,26 @@ __all__ = ['Manager']
 
 class Manager:
     @classmethod
+    def convert(cls, medcial_checkup_from_repogitory: MedicalCheckUp) -> medical_checkup.types.MedicalCheckUp:
+        return medical_checkup.types.MedicalCheckUp(
+            id=medcial_checkup_from_repogitory.id,
+            employee=employee.models.employee.Manager.convert(
+                medcial_checkup_from_repogitory.employee),
+            target_year=medcial_checkup_from_repogitory.target_year,
+            conducted_year=medcial_checkup_from_repogitory.conducted_year,
+            conducted_month=medcial_checkup_from_repogitory.conducted_month,
+            course=medical_checkup.types.Course(medcial_checkup_from_repogitory.course),
+            is_reexamination=medcial_checkup_from_repogitory.is_reexamination,
+            location=medcial_checkup_from_repogitory.location,
+            consultation_date=medcial_checkup_from_repogitory.consultation_date,
+            need_reexamination=medcial_checkup_from_repogitory.need_reexamination,
+            judgement_date=medcial_checkup_from_repogitory.judgement_date
+        )
+
+    @classmethod
     def iter_all(cls) -> Iterator[medical_checkup.types.MedicalCheckUp]:
         return (
-            medical_checkup.types.MedicalCheckUp(
-                id=medcial_checkup_from_repogitory.id,
-                employee=employee.models.employee.Manager.convert(
-                    medcial_checkup_from_repogitory.employee),
-                target_year=medcial_checkup_from_repogitory.target_year,
-                conducted_year=medcial_checkup_from_repogitory.conducted_year,
-                conducted_month=medcial_checkup_from_repogitory.conducted_month,
-                need_reexamination=medcial_checkup_from_repogitory.need_reexamination,
-            )
+            cls.convert(medcial_checkup_from_repogitory=medcial_checkup_from_repogitory)
             for medcial_checkup_from_repogitory in MedicalCheckUp.objects.iterator()
         )
 
